@@ -38,10 +38,43 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutions = [];
+  var allPossibleRows = []; //array of all the row configurations with one rook in it
+  
+  var array = [];
+  for (var i = 0; i < n; i++) {
+    array.push(0);
+  } //produces an array holding 0s of length n
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  for (var j = 0; j < n; j++) {
+    var row = array.slice();
+    row[j] = 1;
+    allPossibleRows.push(row);
+  } //builds all possible rows and stores in an array
+
+  //define a recursive function findBoardSolutions that takes the argument of rowsLeft and an
+  //empty array
+  var findPossibleBoardSolutions = function(rowsLeft, result) {
+    if (rowsLeft === 0) {
+      solutions.push(result);
+      return;
+    }
+    allPossibleRows.forEach(function(row) {
+      var x = [];
+      x.push(row);
+      findPossibleBoardSolutions(rowsLeft - 1, result.concat(x));
+
+    });
+  };
+  findPossibleBoardSolutions(n, []);
+  
+  var rooksSolutions = _.reject(solutions, function(board) {
+    var matrix = new Board(board);
+    return matrix.hasAnyRooksConflicts.call(matrix);
+  });
+  
+  return rooksSolutions.length;
+
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
