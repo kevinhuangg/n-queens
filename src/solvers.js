@@ -77,8 +77,9 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solutions = [];
-  var allPossibleRows = []; //array of all the row configurations with one queen in it
+  var board = new Board({n: n});
+  var solution = board.rows();
+  var allPossibleRows = [];
   
   var array = [];
   for (var i = 0; i < n; i++) {
@@ -89,33 +90,28 @@ window.findNQueensSolution = function(n) {
     var row = array.slice();
     row[j] = 1;
     allPossibleRows.push(row);
-  } //builds all possible rows and stores in an array
-  
-  var findPossibleBoardSolutions = function(rowsLeft, result) {
-    var board = new Board(result);
+  }
 
+  var findABoardSolution = function(rowsLeft, result) {
+    var board = new Board(result);
     if (board.hasAnyQueensConflicts.call(board)) {
       return;
     }
     if (rowsLeft === 0) {
-      solutions.push(result);
+      solution = result;
       return;
-    } 
+    }
     allPossibleRows.forEach(function(row) {
       var x = [];
       x.push(row);
-      findPossibleBoardSolutions(rowsLeft - 1, result.concat(x));
+      findABoardSolution(rowsLeft - 1, result.concat(x));
     });
   };
+  findABoardSolution(n, []);
 
-  if (n !== 2 && n !== 3) {
-    findPossibleBoardSolutions(n, []);
-  } else { 
-    console.log(solutions);
-  };
-  // console.log('Single solution for ' + n + ' queens:', JSON.stringify(solutions[0]));
-  return solutions.length === 0 ? [] : solutions[0];
 
+  return solution;
+  
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
@@ -136,7 +132,7 @@ window.countNQueensSolutions = function(n) {
 
   //define a recursive function findBoardSolutions that takes the argument of rowsLeft and an
   //empty array
-  var findPossibleBoardSolutions = function(rowsLeft, result) {
+  var findQueensBoardSolutions = function(rowsLeft, result) {
     var board = new Board(result);
     if (board.hasAnyQueensConflicts.call(board)) {
       return;
@@ -148,10 +144,10 @@ window.countNQueensSolutions = function(n) {
     allPossibleRows.forEach(function(row) {
       var x = [];
       x.push(row);
-      findPossibleBoardSolutions(rowsLeft - 1, result.concat(x));
+      findQueensBoardSolutions(rowsLeft - 1, result.concat(x));
     });
   };
-  findPossibleBoardSolutions(n, []);
+  findQueensBoardSolutions(n, []);
   
   return solutions.length;
 
