@@ -2,6 +2,10 @@
 // It's part of the Board Visualizer
 // The only portions you need to work on are the helper functions (below)
 
+// This file is a Backbone Model (don't worry about what that means)
+// It's part of the Board Visualizer
+// The only portions you need to work on are the helper functions (below)
+
 (function() {
 
   window.Board = Backbone.Model.extend({
@@ -14,11 +18,13 @@
       } else if (params.hasOwnProperty('n')) {
         this.set(makeEmptyMatrix(this.get('n')));
       } else {
+        console.log(params.length);
+        console.log('here');
         this.set('n', params.length);
       }
     },
 
-    rows: function() { //returns an array of the board state
+    rows: function() {
       return _(_.range(this.get('n'))).map(function(rowIndex) {
         return this.get(rowIndex);
       }, this);
@@ -60,8 +66,6 @@
         0 <= colIndex && colIndex < this.get('n')
       );
     },
-
-
 /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
